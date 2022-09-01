@@ -1,6 +1,6 @@
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const Log = require('./models/Log');
 const connectDB = require('./config/db');
 
@@ -10,6 +10,8 @@ connectDB();
 let mainWindow;
 
 let isDev = false;
+
+const isMac = process.platform === 'darwin' ? true : false;
 
 if (
   process.env.NODE_ENV !== undefined &&
@@ -68,24 +70,52 @@ function createMainWindow() {
 
     if (isDev) {
     }
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   });
 
   mainWindow.on('closed', () => (mainWindow = null));
 }
+// Load Logs
+ipcMain.on('logs:load', sendLogs);
 
-app.on('ready', createMainWindow);
+app.on('ready', () => {
+  createMainWindow();
+
+  const mainMenu = Menu.buildFromTemplate(menu);
+  Menu.setApplicationMenu(mainMenu);
+});
+
 ipcMain.on('logs:load', sendLogs); // Listen for logs:load
 
-async function sendLogs() {
-  try {
-    const logs = await Log.find().sort({ created: 1 });
-    mainWindow.webContents.send('logs:get', JSON.stringify(logs));
-    console.log(logs);
-  } catch (err) {
-    console.log(err);
-  }
-}
+const menu = [
+  ...(isMac ? [{ role: 'appMenu' }] : []),
+  {
+    role: 'fileMenu',
+  },
+  { role: 'editMenu' },
+  {
+    label: 'Logs',
+    submenu: [
+      {
+        label: 'Clear Logs',
+        click: () => clearLogs(),
+      },
+    ],
+  },
+  ...(isDev
+    ? [
+        {
+          label: 'Developer',
+          submenu: [
+            { role: 'reload' },
+            { role: 'forcereload' },
+            { type: 'separator' },
+            { role: 'toggledevtools' },
+          ],
+        },
+      ]
+    : []),
+];
 
 // Create log
 ipcMain.on('logs:add', async (e, item) => {
@@ -106,6 +136,27 @@ ipcMain.on('logs:delete', async (e, id) => {
     console.log(err);
   }
 });
+
+// Send logs to renderer
+async function sendLogs() {
+  try {
+    const logs = await Log.find().sort({ created: 1 });
+    mainWindow.webContents.send('logs:get', JSON.stringify(logs));
+    console.log(logs);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// Clear all logs
+async function clearLogs() {
+  try {
+    await Log.deleteMany({}); // Delete all logs (mongoDB)
+    mainWindow.webContents.send('logs:clear');
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

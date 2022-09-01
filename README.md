@@ -1,6 +1,6 @@
 # BugLogger Electron 20 - React 18 frontend
 
-A simple bug logger app built with Electron 20 and React 18.
+A simple bug logger desktop application built with Electron 20 and React 18. The application is a simple bug logger that allows users to create, edit, and delete bugs. The data is stored on MongoDB Atlas. The application is designed to be shared across multiple users.
 
 - Babel used to transpile modern JavaScript syntax - development
 - Webpack used to bundle the app - development
@@ -8,13 +8,13 @@ A simple bug logger app built with Electron 20 and React 18.
 - style-loader : import styles
 - file-loader : import files
 - electron-devtools-installer
+- Mongoose used to connect to MongoDB - for object modeling schema
 
--[x] Mongoose used to connect to MongoDB - for object modeling schema
+<p align="center"><img src="./images/panel.png"  height="auto" width="100%"></p>
 
 # React
 
 - Functional components used with hooks as opposed to using classes
--
 
 # Scripts
 
@@ -68,6 +68,43 @@ A simple bug logger app built with Electron 20 and React 18.
   - css minify
   -
 
-# Extra Installs
+# Packages - full list
 
-- `npm i moment react-moment`
+```
+├── @babel/core@7.9.6
+├── @babel/preset-env@7.9.6
+├── @babel/preset-react@7.9.4
+├── babel-loader@8.1.0
+├── babili-webpack-plugin@0.1.2
+├── bootstrap@5.2.0
+├── cross-env@7.0.2
+├── css-loader@3.5.3
+├── electron-devtools-installer@3.0.0
+├── electron-packager@14.2.1
+├── electron@20.1.1
+├── file-loader@6.0.0
+├── html-webpack-plugin@4.3.0
+├── mini-css-extract-plugin@0.9.0
+├── moment@2.29.4
+├── mongoose@6.5.4
+├── react-bootstrap@2.5.0
+├── react-dom@18.2.0
+├── react-moment@1.1.2
+├── react@18.2.0
+├── style-loader@1.2.1
+├── webpack-cli@3.3.11
+├── webpack-dev-server@3.10.3
+└── webpack@4.43.0
+```
+
+# Instructions
+
+- Clone repo and run `npm install`
+- Set up database on mongoDB Atlas and add the connection string to the `config/db.js` file
+- Run `npm run prod` to compile and start the app
+
+# Build
+
+- Run `npm run postpackage-win32` to build the app for windows
+- Run `npm run postpackage-linux` to build the app for linux
+- Run `npm run postpackage-darwin` to build the app for mac

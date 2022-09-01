@@ -18,7 +18,10 @@
         "start": "cross-env NODE_ENV=development webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js --mode development",
         "build": "cross-env NODE_ENV=production webpack --config webpack.build.config.js --mode production",
         "package": "npm run build",
-        "postpackage": "electron-packager ./ --out=./release-builds"
+        "postpackage-win32": "electron-packager ./ --out=./release-builds --overwrite --platform=win32 --arch=x64 --icon=assets/icons/icon.ico",
+        "postpackage-mac": "electron-packager ./ --out=./release-builds --overwrite --platform=darwin --arch=x64 --icon=assets/icons/icon.icns",
+        "postpackage-linux": "electron-packager ./ --out=./release-builds --overwrite --platform=-platform=linux --arch=x64 --icon=assets/icons/icon.png",
+        "postpackage-gen": "electron-packager ./ --out=./release-builds"
     },
     "devDependencies": {
         "@babel/core": "^7.9.6",

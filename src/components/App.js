@@ -19,9 +19,17 @@ const App = () => {
   useEffect(() => {
     console.log('useEffect');
     ipcRenderer.send('logs:load');
+
+    // Retrieve logs:get from main process
     ipcRenderer.on('logs:get', (e, logs) => {
       console.log('logs:get');
       setLogs(JSON.parse(logs));
+    });
+
+    // Retrieve logs:clear from main process
+    ipcRenderer.on('logs:clear', () => {
+      setLogs([]);
+      showLogsCleared('Logs Cleared');
     });
   }, []);
 
@@ -92,6 +100,26 @@ const App = () => {
   function showWarn({
     message = 'Please enter all fields',
     variant = 'danger',
+    seconds = 3000,
+  }) {
+    setAlert({
+      show: true,
+      message,
+      variant,
+    });
+
+    setTimeout(() => {
+      setAlert({
+        show: false,
+        message,
+        variant: 'success',
+      });
+    }, seconds);
+  }
+
+  function showLogsCleared({
+    message = 'Logs Cleared',
+    variant = 'success',
     seconds = 3000,
   }) {
     setAlert({
