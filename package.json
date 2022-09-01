@@ -1,8 +1,8 @@
 {
-    "name": "simple-electron-react",
-    "productName": "React Electron App",
+    "name": "buglogger",
+    "productName": "BugLogger",
     "version": "1.0.0",
-    "description": "Simple boilerplate in Electron 20 with React 18",
+    "description": "App bug tracker for teams",
     "license": "MIT",
     "engines": {
         "node": ">=9.0.0",
@@ -41,8 +41,11 @@
     },
     "dependencies": {
         "bootstrap": "^5.2.0",
+        "moment": "^2.29.4",
+        "mongoose": "^6.5.4",
         "react": "^18.2.0",
         "react-bootstrap": "^2.5.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-moment": "^1.1.2"
     }
 }

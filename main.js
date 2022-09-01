@@ -1,6 +1,11 @@
 const path = require('path');
 const url = require('url');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const Log = require('./models/Log');
+const connectDB = require('./config/db');
+
+// Connect to the database
+connectDB();
 
 let mainWindow;
 
@@ -15,12 +20,13 @@ if (
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 1100,
+    width: isDev ? 1400 : 1100,
     height: 800,
     show: false,
     icon: `${__dirname}/assets/icon.png`,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
@@ -59,12 +65,27 @@ function createMainWindow() {
     // 	)
     // 	mainWindow.webContents.openDevTools()
     // }
+
+    if (isDev) {
+    }
+    mainWindow.webContents.openDevTools();
   });
 
   mainWindow.on('closed', () => (mainWindow = null));
 }
 
 app.on('ready', createMainWindow);
+ipcMain.on('logs:load', sendLogs); // Listen for logs:load
+
+async function sendLogs() {
+  try {
+    const logs = await Log.find().sort({ created: 1 });
+    mainWindow.webContents.send('logs:get', JSON.stringify(logs));
+    console.log(logs);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
